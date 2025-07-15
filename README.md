@@ -6,3 +6,5 @@ http://localhost:3000/login
 - Outlet in router
 
 - Create footer component
+- Put validation
+- Add error page
