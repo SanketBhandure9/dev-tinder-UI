@@ -5,3 +5,4 @@ export const PROFILE_VIEW_URL = "http://localhost:3000/profile/view";
 export const PROFILE_EDIT_URL = "http://localhost:3000/profile/edit";
 export const USER_CONNECTIONS_URL = "http://localhost:3000/user/connections";
 export const USER_REQUESTS_URL = "http://localhost:3000/user/requests/received";
+export const USER_REVIEW_REQUESTS_URL = "http://localhost:3000/request/review";

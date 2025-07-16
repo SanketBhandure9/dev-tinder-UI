@@ -1,6 +1,9 @@
 import axios from "axios";
-import { USER_REQUESTS_URL } from "../utils/constants";
-import { addRequests } from "../utils/requestSlice";
+import {
+  USER_REQUESTS_URL,
+  USER_REVIEW_REQUESTS_URL,
+} from "../utils/constants";
+import { addRequests, removeRequest } from "../utils/requestSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 
@@ -17,6 +20,17 @@ const Requests = () => {
     } catch (err) {}
   };
 
+  const reviewRequests = async (status, _id) => {
+    try {
+      const response = await axios.post(
+        USER_REVIEW_REQUESTS_URL + `/${status}/${_id}`,
+        {},
+        { withCredentials: true }
+      );
+      dispatch(removeRequest(_id));
+    } catch (err) {}
+  };
+
   useEffect(() => {
     fetchRequests();
   }, []);
@@ -24,12 +38,16 @@ const Requests = () => {
   if (!requests) return;
 
   if (requests.length === 0) {
-    return <h1 className="font-bold text-2xl">NO requests found</h1>;
+    return (
+      <h1 className="flex justify-center my-10 font-bold text-xl">
+        No requests found
+      </h1>
+    );
   }
 
   return (
     <div className="text-center my-10">
-      <h1 className="font-bold text-2xl">Connections</h1>
+      <h1 className="font-bold text-2xl">Connection Requests</h1>
       {requests.map((request) => {
         const { _id, firstName, lastName, age, gender, about, photoUrl } =
           request.fromUserId;
@@ -43,8 +61,20 @@ const Requests = () => {
                   <h2>{firstName + " " + lastName}</h2>
                 </div>
                 <div className="card-actions justify-end">
-                  <button className="btn btn-primary">Accept</button>
-                  <button className="btn btn-secondary">Reject</button>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => reviewRequests("accepted", request._id)}
+                  >
+                    Accept
+                  </button>
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => {
+                      reviewRequests("rejected", request._id);
+                    }}
+                  >
+                    Reject
+                  </button>
                 </div>
               </div>
             </div>
