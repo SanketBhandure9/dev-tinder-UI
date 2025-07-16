@@ -21,7 +21,7 @@ const EditProfile = ({ user }) => {
     try {
       const response = await axios.post(
         PROFILE_EDIT_URL,
-        { age, about },
+        { age, about, photoUrl },
         { withCredentials: true }
       );
       dispatch(addUser(response?.data?.data));
