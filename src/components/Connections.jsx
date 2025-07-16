@@ -26,27 +26,23 @@ const Connections = () => {
   if (!connections) return;
 
   if (connections.length === 0) {
-    return <h1 className="font-bold text-2xl">Connections</h1>;
+    return <h1 className="font-bold text-2xl">No connection founds</h1>;
   }
 
   return (
     <div className="text-center my-10">
       <h1 className="font-bold text-2xl">Connections</h1>
       {connections.map((connection) => {
-        const { firstName, lastName, age, gender, about, photoUrl } =
+        const { _id, firstName, lastName, age, gender, about, photoUrl } =
           connection;
         return (
-          <div className="m-4 p-4 flex justify-center">
+          <div key={_id} className="m-4 p-4 flex justify-center">
             <div className="card bg-neutral text-neutral-content w-96">
               <div className="card-body items-center text-center">
                 <h2 className="card-title">Cookies!</h2>
                 <div className="card-actions justify-end">
                   <img className="w-20 h-20 object-cover" src={photoUrl} />
                   <h2>{firstName + " " + lastName}</h2>
-                </div>
-                <div className="card-actions justify-end">
-                  <button className="btn btn-primary">Accept</button>
-                  <button className="btn btn-ghost">Reject</button>
                 </div>
               </div>
             </div>
