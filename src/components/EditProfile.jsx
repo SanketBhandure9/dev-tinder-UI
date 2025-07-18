@@ -1,90 +1,177 @@
 import { useState } from "react";
-import UserCard from "./UserCard";
+import EditProfileForm from "./EditProfileForm";
+import PreviewProfile from "./PreviewProfile";
 import { PROFILE_EDIT_URL } from "../utils/constants";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { addUser } from "../utils/userSlice";
 
-const EditProfile = ({ user }) => {
-  const [age, setAge] = useState(user.age || "");
-  const [about, setAbout] = useState(user.about || "");
-  const [photoUrl, setPhotoUrl] = useState(user.photoUrl || "");
-  const [showToast, setShowToast] = useState(false);
+const DEFAULT_FIELDS = [
+  {
+    name: "age",
+    label: "Age",
+    type: "number",
+    placeholder: "Your Age",
+    min: 18,
+    max: 80,
+    required: true,
+    validate: (v) => Number(v) >= 18 && Number(v) <= 80,
+    errorMsg: "Age must be between 18 and 80",
+  },
+  {
+    name: "about",
+    label: "About",
+    type: "textarea",
+    placeholder: "Something about you",
+    maxLength: 160,
+    required: true,
+    validate: (v) => v.length > 0 && v.length <= 160,
+    errorMsg: "About must be 1-160 characters",
+  },
+  {
+    name: "photoUrl",
+    label: "Photo URL",
+    type: "text",
+    placeholder: "Your Photo URL",
+    required: true,
+    validate: (v) => v.startsWith("http"),
+    errorMsg: "Please enter a valid Photo URL",
+  },
+];
 
-  //   const [skills, setSkills] = useState([]);
-  console.log(user);
-  const [error, setError] = useState("");
+const EditProfile = ({ user }) => {
   const dispatch = useDispatch();
+  const [skills, setSkills] = useState(
+    Array.isArray(user.skills)
+      ? user.skills
+      : typeof user.skills === "string"
+      ? user.skills
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : []
+  );
+  const [skillInput, setSkillInput] = useState("");
+  const [skillError, setSkillError] = useState("");
+  const [fields, setFields] = useState(() =>
+    DEFAULT_FIELDS.map((f) => ({
+      ...f,
+      value: user[f.name] || "",
+    }))
+  );
+  const [showToast, setShowToast] = useState(false);
+  const [error, setError] = useState("");
+  const [activeTab, setActiveTab] = useState("edit");
 
   const saveProfile = async () => {
     setError("");
+    setSkillError("");
+
+    for (let field of fields) {
+      if (field.required && !field.validate(field.value)) {
+        return setError(field.errorMsg);
+      }
+    }
+
+    const payload = {};
+    fields.forEach((f) => {
+      payload[f.name] = f.value;
+    });
+    payload.skills = skills;
+
     try {
-      const response = await axios.post(
-        PROFILE_EDIT_URL,
-        { age, about, photoUrl },
-        { withCredentials: true }
-      );
+      const response = await axios.post(PROFILE_EDIT_URL, payload, {
+        withCredentials: true,
+      });
       dispatch(addUser(response?.data?.data));
       setShowToast(true);
-      setTimeout(() => {
-        setShowToast(false);
-      }, 3000);
+      setTimeout(() => setShowToast(false), 3000);
     } catch (err) {
-      setError(err.response.data);
+      setError(err.response?.data || "Failed to save profile");
     }
   };
 
+  const addSkill = () => {
+    const newSkill = skillInput.trim();
+    if (!newSkill) {
+      setSkillError("Skill cannot be empty");
+      return;
+    }
+    if (skills.includes(newSkill)) {
+      setSkillError("Skill already added");
+      return;
+    }
+    if (skills.length >= 5) {
+      setSkillError("You can add up to 5 skills only");
+      return;
+    }
+    setSkills([...skills, newSkill]);
+    setSkillInput("");
+    setSkillError("");
+  };
+
+  const removeSkill = (idx) => {
+    setSkills(skills.filter((_, i) => i !== idx));
+  };
+
+  const handleSkillInputKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addSkill();
+    }
+  };
+
+  const getField = (name) => fields.find((f) => f.name === name)?.value || "";
+
   return (
     <>
-      <div className="flex justify-center my-20">
-        <div className="flex justify-center mx-10">
-          <div className="card bg-base-300 w-96 shadow-sm">
-            <div className="card-body">
-              <h2 className="card-title justify-center">Edit Profile</h2>
-              <div>
-                <fieldset className="fieldset">
-                  <legend className="fieldset-legend">Age</legend>
-                  <input
-                    type="number"
-                    className="input"
-                    value={age}
-                    onChange={(event) => setAge(event.target.value)}
-                  />
-                </fieldset>
-                <fieldset className="fieldset">
-                  <legend className="fieldset-legend">About</legend>
-                  <input
-                    type="text"
-                    className="input"
-                    value={about}
-                    onChange={(event) => setAbout(event.target.value)}
-                  />
-                </fieldset>
-                <fieldset className="fieldset">
-                  <legend className="fieldset-legend">Photo URL</legend>
-                  <input
-                    type="text"
-                    className="input"
-                    value={photoUrl}
-                    onChange={(event) => setPhotoUrl(event.target.value)}
-                  />
-                </fieldset>
-              </div>
-              <p className="text-red-500">{error}</p>
-              <div className="card-actions justify-center">
-                <button className="btn btn-primary" onClick={saveProfile}>
-                  Save Profile
-                </button>
-              </div>
-            </div>
+      <div className="flex justify-center items-center h-full w-full px-2">
+        <div className="max-w-3xl w-full my-3">
+          <div className="flex justify-center mb-3">
+            {["edit", "preview"].map((tab) => (
+              <button
+                key={tab}
+                className={`px-4 py-1.5 text-sm font-medium border border-primary/50 transition-all duration-200 ${
+                  activeTab === tab
+                    ? "bg-primary text-white"
+                    : "bg-white text-primary hover:bg-primary/10"
+                } ${tab === "edit" ? "rounded-l-xl" : "rounded-r-xl"}`}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </button>
+            ))}
           </div>
+
+          {activeTab === "edit" && (
+            <div className="flex justify-center w-full">
+              <EditProfileForm
+                fields={fields}
+                setFields={setFields}
+                skills={skills}
+                setSkills={setSkills}
+                skillInput={skillInput}
+                setSkillInput={setSkillInput}
+                skillError={skillError}
+                addSkill={addSkill}
+                removeSkill={removeSkill}
+                handleSkillInputKeyDown={handleSkillInputKeyDown}
+                error={error}
+                saveProfile={saveProfile}
+              />
+            </div>
+          )}
+
+          {activeTab === "preview" && (
+            <PreviewProfile user={user} skills={skills} fields={fields} />
+          )}
         </div>
-        <UserCard user={{ ...user, age, about, photoUrl }} />
       </div>
+
       {showToast && (
-        <div className="toast toast-top toast-center">
-          <div className="alert alert-success">
-            <span>Data saved successfully.</span>
+        <div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50">
+          <div className="alert alert-success shadow-lg bg-white border border-green-300 text-green-800 rounded-xl px-6 py-3 font-semibold">
+            Profile updated successfully!
           </div>
         </div>
       )}

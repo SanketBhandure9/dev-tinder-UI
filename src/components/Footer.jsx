@@ -1,15 +1,10 @@
 const Footer = () => {
   return (
-    <>
-      <footer className="footer sm:footer-horizontal footer-center bg-base-300 text-base-content p-4 fixed bottom-0">
-        <aside>
-          <p>
-            Copyright © {new Date().getFullYear()} - All right reserved by ACME
-            Industries Ltd
-          </p>
-        </aside>
-      </footer>
-    </>
+    <footer className="w-full bg-white/90 border-t border-gray-200 shadow-inner rounded-t-xl h-16 flex items-center justify-center">
+      <p className="text-gray-500 text-sm">
+        &copy; {new Date().getFullYear()} Dev Tinder. All rights reserved.
+      </p>
+    </footer>
   );
 };
 

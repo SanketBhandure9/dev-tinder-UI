@@ -19,18 +19,13 @@ const Login = () => {
     try {
       const result = await axios.post(
         USER_SIGNUP,
-        {
-          firstName,
-          lastName,
-          emailId,
-          password,
-        },
+        { firstName, lastName, emailId, password },
         { withCredentials: true }
       );
       dispatch(addUser(result.data.data));
       navigate("/profile");
     } catch (err) {
-      setError(err.response.data);
+      setError(err?.response?.data?.message || "Signup failed.");
       console.error(err);
     }
   };
@@ -39,86 +34,114 @@ const Login = () => {
     try {
       const result = await axios.post(
         LOGIN_URL,
-        {
-          emailId,
-          password,
-        },
+        { emailId, password },
         { withCredentials: true }
       );
       dispatch(addUser(result.data));
       navigate("/feed");
     } catch (err) {
-      setError(err.response.data);
+      setError(err?.response?.data?.message || "Login failed.");
       console.error(err);
     }
   };
 
   return (
-    <div className="flex justify-center my-20">
-      <div className="card bg-base-300 w-96 shadow-sm">
-        <div className="card-body">
-          <h2 className="card-title justify-center">
-            {isLoginForm ? "Login" : "Singup"}
+    <div className="relative h-full w-full">
+      <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 -z-10" />
+      <div className="flex justify-center items-center h-full w-full px-4">
+        <div className="bg-white/90 rounded-3xl shadow-2xl w-full max-w-md px-8 py-5 flex flex-col items-center border border-gray-100 backdrop-blur-lg overflow-y-auto max-h-full">
+          <h2 className="text-3xl font-extrabold text-primary mb-2 text-center tracking-tight drop-shadow-sm">
+            {isLoginForm ? "Welcome Back!" : "Create your account"}
           </h2>
-          <div>
+          <p className="text-gray-500 mb-6 text-center text-base font-medium">
+            {isLoginForm
+              ? "Log in to connect and explore the dev community."
+              : "Sign up to find and connect with amazing developers."}
+          </p>
+
+          <div className="w-full flex flex-col gap-5">
             {!isLoginForm && (
-              <fieldset className="fieldset">
-                <legend className="fieldset-legend">First Name</legend>
-                <input
-                  type="text"
-                  className="input"
-                  value={firstName}
-                  onChange={(event) => setFirstName(event.target.value)}
-                />
-              </fieldset>
+              <>
+                <div className="flex flex-col gap-1">
+                  <label className="text-sm font-semibold text-gray-700">
+                    First Name
+                  </label>
+                  <input
+                    type="text"
+                    className="input input-md bg-white border border-gray-400 text-gray-900 w-full pl-3 py-2 rounded-lg"
+                    placeholder="First Name"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-sm font-semibold text-gray-700">
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    className="input input-md bg-white border border-gray-400 text-gray-900 w-full pl-3 py-2 rounded-lg"
+                    placeholder="Last Name"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                  />
+                </div>
+              </>
             )}
-            {!isLoginForm && (
-              <fieldset className="fieldset">
-                <legend className="fieldset-legend">Last Name</legend>
-                <input
-                  type="text"
-                  className="input"
-                  value={lastName}
-                  onChange={(event) => setLastName(event.target.value)}
-                />
-              </fieldset>
-            )}
-            <fieldset className="fieldset">
-              <legend className="fieldset-legend">Email ID</legend>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold text-gray-700">
+                Email ID
+              </label>
               <input
-                type="text"
-                className="input"
+                type="email"
+                className="input input-md bg-white border border-gray-400 text-gray-900 w-full pl-3 py-2 rounded-lg"
+                placeholder="Email Address"
                 value={emailId}
-                onChange={(event) => setEmailId(event.target.value)}
+                onChange={(e) => setEmailId(e.target.value)}
               />
-            </fieldset>
-            <fieldset className="fieldset">
-              <legend className="fieldset-legend">Password</legend>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold text-gray-700">
+                Password
+              </label>
               <input
                 type="password"
-                className="input"
+                className="input input-md bg-white border border-gray-400 text-gray-900 w-full pl-3 py-2 rounded-lg"
+                placeholder="Password"
                 value={password}
-                onChange={(event) => setPassword(event.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
               />
-            </fieldset>
+            </div>
+
+            {error && (
+              <p className="text-red-500 text-center mt-2 animate-pulse">
+                {error}
+              </p>
+            )}
+
+            <div className="mt-2 w-full">
+              <button
+                className="btn btn-primary w-full text-white font-semibold rounded-lg shadow-md hover:bg-primary-focus transition-all"
+                onClick={isLoginForm ? handleLogin : handleSignup}
+              >
+                {isLoginForm ? "Login" : "Sign Up"}
+              </button>
+            </div>
+
+            <div className="w-full flex justify-center">
+              <button
+                className="text-primary font-semibold hover:underline hover:text-primary-focus"
+                onClick={() => setIsLoginForm((prev) => !prev)}
+              >
+                {isLoginForm
+                  ? "New user? Sign up here"
+                  : "Existing user? Login here"}
+              </button>
+            </div>
           </div>
-          <p className="text-red-500">{error}</p>
-          <div className="card-actions justify-center">
-            <button
-              className="btn btn-primary"
-              onClick={isLoginForm ? handleLogin : handleSignup}
-            >
-              {isLoginForm ? "Login" : "signup"}
-            </button>
-          </div>
-          <p
-            className="m-auto cursor-pointer py-2"
-            onClick={() => setIsLoginForm((value) => !value)}
-          >
-            {isLoginForm
-              ? "New user?  Sigup here"
-              : "Existing user: Login Here"}
-          </p>
         </div>
       </div>
     </div>

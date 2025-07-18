@@ -9,3 +9,6 @@ http://localhost:3000/login
 - Put validation
 - Add error page
 - Add notification when save data, that data updated successfully
+
+1. Responsive
+2. NavBar
