@@ -10,7 +10,7 @@ const Login = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [emailId, setEmailId] = useState("tara@harale.com");
-  const [password, setPassword] = useState("Taraa@06");
+  const [password, setPassword] = useState("Tara@123");
   const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();

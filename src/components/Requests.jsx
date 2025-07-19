@@ -7,11 +7,11 @@ import { addRequests, removeRequest } from "../utils/requestSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import UserCard from "./UserCard";
+import CardCarousel from "./CardCarousel";
 
 const Requests = () => {
   const requests = useSelector((store) => store.request);
   const dispatch = useDispatch();
-  const [index, setIndex] = useState(0);
 
   const fetchRequests = async () => {
     try {
@@ -75,38 +75,51 @@ const Requests = () => {
     );
   }
 
-  const current = requests[index];
-  const { _id, firstName, lastName, age, gender, about, photoUrl } =
-    current.fromUserId;
-
   return (
-    <div className="text-center my-10">
-      <h1 className="font-bold text-2xl mb-4 text-primary drop-shadow-sm">Connection Requests</h1>
-
-      <div className="flex flex-col items-center justify-center gap-6">
-        <div className="flex items-center gap-6">
-          {/* Left button */}
-          <button
-            className="btn btn-outline btn-primary"
-            disabled={index === 0}
-            onClick={() => setIndex((prev) => prev - 1)}
-          >
-            ⬅️
-          </button>
-          {/* UserCard like Feed */}
-          <div className="w-full max-w-md">
-            <UserCard user={current.fromUserId} hideActions={true} />
-
-            <div className="flex gap-4 mt-4 justify-center">
+    <div className="text-center my-4 mt-7">
+      <div className="flex flex-col items-center mb-2">
+        <div className="flex items-center gap-2">
+          <span className="inline-block bg-gradient-to-tr from-pink-500 via-red-400 to-yellow-400 bg-clip-text text-transparent">
+            <svg
+              width="36"
+              height="36"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              className="text-pink-400"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M16 7a4 4 0 1 0-8 0c0 4.418 4 8 4 8s4-3.582 4-8zM12 11v.01"
+              />
+            </svg>
+          </span>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-tr from-pink-500 via-red-400 to-yellow-400 bg-clip-text text-transparent drop-shadow">
+            Connection Requests
+          </h1>
+        </div>
+        <div className="h-1 w-24 mt-2 rounded-full bg-gradient-to-r from-pink-400 via-red-300 to-yellow-300 opacity-70"></div>
+      </div>
+      <CardCarousel
+        items={requests}
+        showPagination={false}
+        renderCard={(request) => (
+          <div className="w-full max-w-md mx-auto flex flex-col items-center">
+            <div className="w-full flex flex-col items-center">
+              <UserCard user={request.fromUserId} hideActions={true} />
+            </div>
+            <div className="flex gap-4 mt-2 mb-2 justify-center w-full">
               <button
-                className="bg-red-100 text-red-700 border border-red-300 hover:bg-red-200 font-semibold px-6 py-2 rounded-lg transition-all flex items-center gap-2"
-                onClick={() => reviewRequests("rejected", current._id)}
+                className="bg-red-100 text-red-700 border border-red-300 hover:bg-red-200 font-semibold px-4 py-2 rounded-xl transition-all flex items-center gap-3 text-base shadow-md"
+                onClick={() => reviewRequests("rejected", request._id)}
               >
                 <svg
                   width="20"
                   height="20"
                   fill="none"
-                  viewBox="0 0 24 24"
+                  viewBox="0 0 20 20"
                   stroke="currentColor"
                 >
                   <path
@@ -119,14 +132,14 @@ const Requests = () => {
                 Reject
               </button>
               <button
-                className="bg-green-500 text-white hover:bg-green-600 font-semibold px-6 py-2 rounded-lg transition-all flex items-center gap-2 shadow"
-                onClick={() => reviewRequests("accepted", current._id)}
+                className="bg-green-500 text-white hover:bg-green-600 font-semibold px-4 py-2 rounded-xl transition-all flex items-center gap-3 text-base shadow-md"
+                onClick={() => reviewRequests("accepted", request._id)}
               >
                 <svg
                   width="20"
                   height="20"
                   fill="none"
-                  viewBox="0 0 24 24"
+                  viewBox="0 0 20 20"
                   stroke="currentColor"
                 >
                   <path
@@ -140,20 +153,8 @@ const Requests = () => {
               </button>
             </div>
           </div>
-          {/* Right button */}
-          <button
-            className="btn btn-outline btn-primary"
-            disabled={index === requests.length - 1}
-            onClick={() => setIndex((prev) => prev + 1)}
-          >
-            ➡️
-          </button>
-        </div>
-        {/* Pagination info */}
-        <div className="mt-4 text-sm text-gray-500">
-          {index + 1} of {requests.length}
-        </div>
-      </div>
+        )}
+      />
     </div>
   );
 };

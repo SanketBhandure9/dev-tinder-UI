@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 
-const CardCarousel = ({ items = [], renderCard, title }) => {
+const CardCarousel = ({ items = [], renderCard, title, showPagination = true }) => {
   const [index, setIndex] = useState(0);
   const total = items.length;
   const [isMobile, setIsMobile] = useState(false);
@@ -13,8 +13,8 @@ const CardCarousel = ({ items = [], renderCard, title }) => {
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   const onTouchStart = (e) => {
@@ -50,7 +50,6 @@ const CardCarousel = ({ items = [], renderCard, title }) => {
     touchEndX.current = null;
   };
 
-
   if (!Array.isArray(items) || total === 0) {
     return (
       <div className="flex flex-col items-center my-10">
@@ -77,11 +76,11 @@ const CardCarousel = ({ items = [], renderCard, title }) => {
       {title && <h2 className="text-xl font-bold mb-4">{title}</h2>}
 
       <div
-          className="relative w-full max-w-md flex items-center justify-center"
-          onTouchStart={isMobile ? onTouchStart : undefined}
-          onTouchMove={isMobile ? onTouchMove : undefined}
-          onTouchEnd={isMobile ? onTouchEnd : undefined}
-        >
+        className="relative w-full max-w-md flex items-center justify-center"
+        onTouchStart={isMobile ? onTouchStart : undefined}
+        onTouchMove={isMobile ? onTouchMove : undefined}
+        onTouchEnd={isMobile ? onTouchEnd : undefined}
+      >
         {/* Left button - only show on desktop */}
         {!isMobile && (
           <button
@@ -143,9 +142,11 @@ const CardCarousel = ({ items = [], renderCard, title }) => {
       </div>
 
       {/* Pagination info */}
-      <div className="mt-4 text-sm text-gray-500">
-        {index + 1} of {total}
-      </div>
+      {showPagination && (
+        <div className="mt-2 text-sm text-gray-500">
+          {index + 1} of {total}
+        </div>
+      )}
     </div>
   );
 };

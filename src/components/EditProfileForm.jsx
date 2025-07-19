@@ -46,7 +46,7 @@ const EditProfileForm = ({
             <span className="text-xs text-red-500 mt-1">{skillError}</span>
           )}
           <div className="flex flex-wrap gap-2 mt-2">
-            {skills.map((skill, idx) => (
+            {(skills || []).map((skill, idx) => (
               <span
                 key={idx}
                 className="badge badge-lg px-3 py-1 bg-blue-100 text-primary border border-blue-300"
@@ -63,7 +63,7 @@ const EditProfileForm = ({
             ))}
           </div>
         </div>
-        {fields.map((field, idx) => (
+        {(fields || []).map((field, idx) => (
           <div key={field.name} className="form-control">
             <label className="label">
               <span className="label-text text-gray-800 text-sm font-semibold">
