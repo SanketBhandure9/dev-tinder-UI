@@ -27,7 +27,7 @@ const UserCard = ({ user, isPreview = false, hideActions = false }) => {
   };
 
   return (
-    <div className="bg-white border border-gray-200 shadow-xl rounded-2xl w-full max-w-3xl p-14 flex flex-col items-center transition-all hover:shadow-2xl">
+    <div className="bg-white border border-gray-200 shadow-xl rounded-2xl w-full max-w-3xl p-10 flex flex-col items-center transition-all hover:shadow-2xl">
       <div className="w-40 h-40 mb-8">
         <img
           src={photoUrl}
@@ -50,7 +50,6 @@ const UserCard = ({ user, isPreview = false, hideActions = false }) => {
         )}
       </h2>
 
-      
       <div className="text-lg text-gray-600 mb-3">
         <span className="font-medium">Age:</span> {age}
       </div>
