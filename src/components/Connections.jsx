@@ -105,7 +105,7 @@ const Connections = () => {
 
   return (
     <div className="text-center my-6">
-      <div className="flex flex-col items-center mb-4">
+      <div className="flex flex-col items-center">
         <div className="flex items-center gap-3">
           <span className="inline-block bg-gradient-to-tr from-pink-500 via-red-400 to-yellow-400 bg-clip-text text-transparent">
             <svg
