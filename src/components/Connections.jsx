@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { USER_CONNECTIONS_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addConnections } from "../utils/connectionSlice";
+import CardCarousel from "./CardCarousel";
 import axios from "axios";
+import UserCard from "./UserCard";
 
 const Connections = () => {
   const connections = useSelector((store) => store.connection);
@@ -103,70 +105,13 @@ const Connections = () => {
 
   return (
     <div className="text-center my-10">
-      <h1 className="font-bold text-2xl">Connections</h1>
-      {connections.map((connection) => {
-        const { _id, firstName, lastName, age, gender, about, photoUrl } =
-          connection;
-        return (
-          <div key={_id} className="flex justify-center my-6">
-            <div className="bg-white shadow-lg rounded-xl w-full max-w-md p-6 flex flex-col items-center border border-gray-200">
-              <img
-                src={photoUrl}
-                alt={firstName + " " + lastName}
-                className="w-24 h-24 rounded-full object-cover border-4 border-primary shadow mb-4"
-              />
-              <h2 className="text-xl font-semibold text-gray-800 mb-1 flex items-center">
-                {firstName} {lastName}
-                {gender === "male" && (
-                  <span className="ml-2 text-blue-400" title="Male">
-                    ♂️
-                  </span>
-                )}
-                {gender === "female" && (
-                  <span className="ml-2 text-pink-400" title="Female">
-                    ♀️
-                  </span>
-                )}
-              </h2>
-              {/* Skills Badges */}
-              {connection.skills &&
-              Array.isArray(
-                connection.skills ? connection.skills : connection.skills?.split
-              )
-                ? (Array.isArray(connection.skills)
-                    ? connection.skills
-                    : connection.skills.split(",")
-                  )
-                    .filter((s) => !!s)
-                    .slice(0, 5).length > 0 && (
-                    <div className="flex flex-wrap gap-2 justify-center mb-2">
-                      {(Array.isArray(connection.skills)
-                        ? connection.skills
-                        : connection.skills.split(",")
-                      )
-                        .filter((s) => !!s)
-                        .slice(0, 5)
-                        .map((skill, i) => (
-                          <span
-                            key={i}
-                            className="badge badge-lg rounded-full px-3 py-1 text-sm font-semibold bg-gradient-to-r from-blue-100 to-pink-100 text-primary shadow border border-primary/20"
-                          >
-                            {skill.trim()}
-                          </span>
-                        ))}
-                    </div>
-                  )
-                : null}
-              <div className="text-gray-600 mb-2">
-                Age: <span className="font-medium">{age}</span>
-              </div>
-              <div className="text-gray-500 italic mb-4 text-center">
-                {about}
-              </div>
-            </div>
-          </div>
-        );
-      })}
+      <h1 className="font-bold text-2xl mb-4">Connections</h1>
+      <CardCarousel
+        items={connections}
+        renderCard={(connection) => (
+          <UserCard user={connection} key={connection._id} hideActions={true} />
+        )}
+      />
     </div>
   );
 };

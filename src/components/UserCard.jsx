@@ -27,8 +27,8 @@ const UserCard = ({ user, isPreview = false, hideActions = false }) => {
   };
 
   return (
-    <div className="bg-white border border-gray-200 shadow-xl rounded-2xl w-full max-w-md p-6 flex flex-col items-center transition-all hover:shadow-2xl">
-      <div className="w-24 h-24 mb-4">
+    <div className="bg-white border border-gray-200 shadow-xl rounded-2xl w-full max-w-3xl p-14 flex flex-col items-center transition-all hover:shadow-2xl">
+      <div className="w-40 h-40 mb-8">
         <img
           src={photoUrl}
           alt={`${firstName} ${lastName}`}
@@ -36,7 +36,7 @@ const UserCard = ({ user, isPreview = false, hideActions = false }) => {
         />
       </div>
 
-      <h2 className="text-xl font-semibold text-gray-800 mb-1 flex items-center gap-2">
+      <h2 className="text-3xl font-semibold text-gray-800 mb-3 flex items-center gap-3">
         {firstName} {lastName}
         {gender === "male" && (
           <span className="text-blue-500 text-lg" title="Male">
@@ -50,12 +50,13 @@ const UserCard = ({ user, isPreview = false, hideActions = false }) => {
         )}
       </h2>
 
-      <div className="text-sm text-gray-600 mb-1">
+      
+      <div className="text-lg text-gray-600 mb-3">
         <span className="font-medium">Age:</span> {age}
       </div>
 
       {about && (
-        <p className="text-sm text-gray-500 text-center italic mb-4 px-2">
+        <p className="text-lg text-gray-500 text-center italic mb-6 px-4">
           {about.length > 100 ? `${about.slice(0, 100)}...` : about}
         </p>
       )}
