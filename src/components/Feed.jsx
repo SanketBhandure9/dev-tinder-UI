@@ -36,7 +36,21 @@ const Feed = () => {
   if (feed.length === 0) {
     return (
       <div className="flex flex-col items-center my-16">
-        <svg width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-gray-400 mb-4"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12A4 4 0 1 1 8 12a4 4 0 0 1 8 0ZM12 14v6m0 0H7m5 0h5" /></svg>
+        <svg
+          width="64"
+          height="64"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          className="text-gray-400 mb-4"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M16 12A4 4 0 1 1 8 12a4 4 0 0 1 8 0ZM12 14v6m0 0H7m5 0h5"
+          />
+        </svg>
         <h1 className="font-bold text-xl text-gray-500">No more users :(</h1>
       </div>
     );

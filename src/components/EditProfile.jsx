@@ -23,10 +23,10 @@ const DEFAULT_FIELDS = [
     label: "About",
     type: "textarea",
     placeholder: "Something about you",
-    maxLength: 160,
+    maxLength: 250,
     required: true,
-    validate: (v) => v.length > 0 && v.length <= 160,
-    errorMsg: "About must be 1-160 characters",
+    validate: (v) => v.length > 50 && v.length <= 250,
+    errorMsg: "About must be 70-250 characters",
   },
   {
     name: "photoUrl",

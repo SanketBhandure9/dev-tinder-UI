@@ -76,63 +76,26 @@ const Requests = () => {
   }
 
   return (
-    <div className="text-center my-4 mt-4">
-      <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-tr from-pink-500 via-red-400 to-yellow-400 bg-clip-text text-transparent drop-shadow">
+    <div className="flex flex-col flex-1 min-h-0 justify-center items-center w-full">
+      {/* <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-tr from-pink-500 via-red-400 to-yellow-400 bg-clip-text text-transparent drop-shadow">
         Requests
-      </h1>
-      <CardCarousel
-        items={requests}
-        showPagination={false}
-        renderCard={(request) => (
-          <div className="w-full max-w-md mx-auto flex flex-col items-center">
-            <div className="w-full flex flex-col items-center">
-              <UserCard user={request.fromUserId} hideActions={true} />
+      </h1> */}
+      <div className="flex justify-center items-center w-full">
+        <CardCarousel
+          items={requests}
+          showPagination={false}
+          renderCard={(request) => (
+            <div className="relative w-full max-w-md mx-auto flex flex-col items-center pb-16">
+              <UserCard
+                user={request.fromUserId}
+                isPreview={false}
+                hideActions={false}
+                onUserAction={(status) => reviewRequests(status === 'interested' ? 'accepted' : 'rejected', request._id)}
+              />
             </div>
-            <div className="flex gap-4 mt-2 mb-2 justify-center w-full">
-              <button
-                className="bg-red-100 text-red-700 border border-red-300 hover:bg-red-200 font-semibold px-4 py-2 rounded-xl transition-all flex items-center gap-3 text-base shadow-md"
-                onClick={() => reviewRequests("rejected", request._id)}
-              >
-                <svg
-                  width="20"
-                  height="20"
-                  fill="none"
-                  viewBox="0 0 20 20"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-                Reject
-              </button>
-              <button
-                className="bg-green-500 text-white hover:bg-green-600 font-semibold px-4 py-2 rounded-xl transition-all flex items-center gap-3 text-base shadow-md"
-                onClick={() => reviewRequests("accepted", request._id)}
-              >
-                <svg
-                  width="20"
-                  height="20"
-                  fill="none"
-                  viewBox="0 0 20 20"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                Accept
-              </button>
-            </div>
-          </div>
-        )}
-      />
+          )}
+        />
+      </div>
     </div>
   );
 };

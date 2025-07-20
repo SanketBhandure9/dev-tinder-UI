@@ -1,5 +1,3 @@
-import React from "react";
-
 const EditProfileForm = ({
   fields,
   setFields,
@@ -98,6 +96,11 @@ const EditProfileForm = ({
                   <span className="text-xs text-gray-500 text-right">
                     {field.value.length}/{field.maxLength}
                   </span>
+                  {field.name === "about" && (field.value.length < 70 || field.value.length > 250) && (
+                    <span className="text-xs text-red-500 mt-1 block">
+                      About must be between 70 and 250 characters.
+                    </span>
+                  )}
                 </>
               ) : (
                 <>
@@ -161,23 +164,33 @@ const EditProfileForm = ({
 
       {/* Save Button */}
       <div className="flex justify-center mt-5">
-        <button
-          type="button"
-          onClick={saveProfile}
-          disabled={!canSave}
-          className={`btn px-6 ${
-            canSave
-              ? "btn-primary"
-              : "bg-gray-300 text-gray-500 cursor-not-allowed border border-gray-300"
-          }`}
-          title={
-            canSave
-              ? "Click to save profile"
-              : "Please add at least 5 skills to continue"
-          }
-        >
-          Save Profile
-        </button>
+        {(() => {
+          const aboutField = (fields || []).find(f => f.name === "about");
+          const aboutIsValid = aboutField && aboutField.value.length >= 70 && aboutField.value.length <= 250;
+          const buttonDisabled = !canSave || !aboutIsValid;
+          return (
+            <button
+              type="button"
+              onClick={saveProfile}
+              disabled={buttonDisabled}
+              className={`btn px-6 ${
+                !buttonDisabled
+                  ? "btn-primary"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed border border-gray-300"
+              }`}
+              title={
+                !buttonDisabled
+                  ? "Click to save profile"
+                  : !canSave
+                    ? "Please add at least 5 skills to continue"
+                    : "About must be between 70 and 250 characters."
+              }
+            >
+              Save Profile
+            </button>
+          );
+        })()}
+
       </div>
     </div>
   );

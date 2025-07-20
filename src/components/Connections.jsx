@@ -104,16 +104,18 @@ const Connections = () => {
   }
 
   return (
-    <div className="text-center my-4">
-      <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-tr from-pink-500 via-red-400 to-yellow-400 bg-clip-text text-transparent drop-shadow">
+    <div className="flex flex-col flex-1 min-h-0 justify-center items-center w-full">
+      {/* <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-tr from-pink-500 via-red-400 to-yellow-400 bg-clip-text text-transparent drop-shadow">
         Connections
-      </h1>
-      <CardCarousel
-        items={connections}
-        renderCard={(connection) => (
-          <UserCard user={connection} key={connection._id} hideActions={true} />
-        )}
-      />
+      </h1> */}
+      <div className="flex justify-center items-center w-full">
+        <CardCarousel
+          items={connections}
+          renderCard={(connection) => (
+            <UserCard user={connection} key={connection._id} hideActions={true} />
+          )}
+        />
+      </div>
     </div>
   );
 };
