@@ -76,32 +76,10 @@ const Requests = () => {
   }
 
   return (
-    <div className="text-center my-4 mt-7">
-      <div className="flex flex-col items-center mb-2">
-        <div className="flex items-center gap-2">
-          <span className="inline-block bg-gradient-to-tr from-pink-500 via-red-400 to-yellow-400 bg-clip-text text-transparent">
-            <svg
-              width="36"
-              height="36"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              className="text-pink-400"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M16 7a4 4 0 1 0-8 0c0 4.418 4 8 4 8s4-3.582 4-8zM12 11v.01"
-              />
-            </svg>
-          </span>
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-tr from-pink-500 via-red-400 to-yellow-400 bg-clip-text text-transparent drop-shadow">
-            Connection Requests
-          </h1>
-        </div>
-        <div className="h-1 w-24 mt-2 rounded-full bg-gradient-to-r from-pink-400 via-red-300 to-yellow-300 opacity-70"></div>
-      </div>
+    <div className="text-center my-4 mt-4">
+      <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-tr from-pink-500 via-red-400 to-yellow-400 bg-clip-text text-transparent drop-shadow">
+        Requests
+      </h1>
       <CardCarousel
         items={requests}
         showPagination={false}
