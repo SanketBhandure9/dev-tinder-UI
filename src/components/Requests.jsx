@@ -90,7 +90,12 @@ const Requests = () => {
                 user={request.fromUserId}
                 isPreview={false}
                 hideActions={false}
-                onUserAction={(status) => reviewRequests(status === 'interested' ? 'accepted' : 'rejected', request._id)}
+                onUserAction={(status) =>
+                  reviewRequests(
+                    status === "interested" ? "accepted" : "rejected",
+                    request._id
+                  )
+                }
               />
             </div>
           )}
