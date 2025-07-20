@@ -1,3 +1,5 @@
+import React from "react";
+
 const EditProfileForm = ({
   fields,
   setFields,
@@ -15,6 +17,8 @@ const EditProfileForm = ({
   const photoField = Array.isArray(fields)
     ? fields.find((f) => f.name === "photoUrl")
     : null;
+
+  const canSave = skills.length >= 5;
 
   return (
     <div className="bg-white rounded-xl shadow-xl p-4 border border-gray-300 w-full max-w-3xl">
@@ -52,12 +56,12 @@ const EditProfileForm = ({
               {(skills || []).map((skill, idx) => (
                 <span
                   key={idx}
-                  className="badge badge-lg px-3 py-1 bg-blue-100 text-primary border border-blue-300"
+                  className="badge badge-lg px-2 py-1 bg-blue-100 text-sm text-primary border border-blue-300"
                 >
                   {skill}
                   <button
                     type="button"
-                    className="ml-1 text-xs text-red-500"
+                    className="text-sm text-red-500"
                     onClick={() => removeSkill(idx)}
                   >
                     &times;
@@ -158,9 +162,19 @@ const EditProfileForm = ({
       {/* Save Button */}
       <div className="flex justify-center mt-5">
         <button
-          className="btn btn-primary px-6"
-          onClick={saveProfile}
           type="button"
+          onClick={saveProfile}
+          disabled={!canSave}
+          className={`btn px-6 ${
+            canSave
+              ? "btn-primary"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed border border-gray-300"
+          }`}
+          title={
+            canSave
+              ? "Click to save profile"
+              : "Please add at least 5 skills to continue"
+          }
         >
           Save Profile
         </button>
