@@ -85,7 +85,7 @@ const Requests = () => {
           items={requests}
           showPagination={false}
           renderCard={(request) => (
-            <div className="relative w-full max-w-md mx-auto flex flex-col items-center pb-16">
+            <div className="relative w-full max-w-md mx-auto flex flex-col items-center">
               <UserCard
                 user={request.fromUserId}
                 isPreview={false}

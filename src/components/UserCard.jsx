@@ -82,7 +82,7 @@ const UserCard = ({
 
       {about && (
         <p className="text-lg text-gray-500 text-center italic mb-3 px-4">
-          {about.length > 100 ? `${about.slice(0, 100)}...` : about}
+          {about}
         </p>
       )}
 
