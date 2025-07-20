@@ -2,7 +2,7 @@ import React from "react";
 import UserCard from "./UserCard";
 
 const PreviewProfile = ({ user, skills, fields }) => (
-  <div className="bg-white rounded-xl shadow p-4 border border-gray-300">
+  <div className="flex justify-center items-center bg-white rounded-xl">
     <div className="flex justify-center">
       <UserCard
         user={{

@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import EditProfile from "./EditProfileForm";
+import EditProfile from "./EditProfile";
 
 const Profile = () => {
   const user = useSelector((store) => store.user);

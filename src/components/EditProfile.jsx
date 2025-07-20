@@ -34,8 +34,8 @@ const DEFAULT_FIELDS = [
     type: "text",
     placeholder: "Your Photo URL",
     required: true,
-    validate: (v) => v.startsWith("http"),
-    errorMsg: "Please enter a valid Photo URL",
+    validate: (v) => /^https?:\/\//.test(v),
+    errorMsg: "Please enter a valid Photo URL (http/https)",
   },
 ];
 
@@ -121,8 +121,6 @@ const EditProfile = ({ user }) => {
     }
   };
 
-  const getField = (name) => fields.find((f) => f.name === name)?.value || "";
-
   return (
     <>
       <div className="flex justify-center items-center h-full w-full px-2">
@@ -144,7 +142,7 @@ const EditProfile = ({ user }) => {
           </div>
 
           {activeTab === "edit" && (
-            <div className="flex justify-center w-full">
+            <div className="flex justify-center items-center w-full">
               <EditProfileForm
                 fields={fields}
                 setFields={setFields}
