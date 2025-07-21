@@ -112,7 +112,12 @@ const Connections = () => {
         <CardCarousel
           items={connections}
           renderCard={(connection) => (
-            <UserCard user={connection} key={connection._id} hideActions={true} />
+            <UserCard
+              user={connection}
+              key={connection._id}
+              hideActions={true}
+              showRemoveConnection={true}
+            />
           )}
         />
       </div>

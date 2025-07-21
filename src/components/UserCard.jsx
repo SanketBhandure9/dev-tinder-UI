@@ -1,13 +1,19 @@
 import axios from "axios";
-import { USER_SEND_REQUESTS_URL } from "../utils/constants";
+import {
+  USER_SEND_REQUESTS_URL,
+  USER_REMOVE_CONNECTION,
+} from "../utils/constants";
 import { removeUserFromFeed } from "../utils/feedSlice";
 import { useDispatch } from "react-redux";
+import { removeConnection } from "../utils/connectionSlice";
 
 const UserCard = ({
   user,
   isPreview = false,
   hideActions = false,
   onUserAction,
+  showRemoveConnection = false,
+  onRemoveConnection,
 }) => {
   const dispatch = useDispatch();
   const { _id, firstName, lastName, age, gender, photoUrl, about } = user;
@@ -40,6 +46,36 @@ const UserCard = ({
     }
   };
 
+  // Handler for removing a connection
+  const handleRemoveConnection = async () => {
+    if (
+      !window.confirm(
+        `Are you sure you want to remove ${firstName} ${lastName} from your connections?`
+      )
+    ) {
+      return;
+    }
+    try {
+      await axios.delete(USER_REMOVE_CONNECTION + `/${_id}`, {
+        withCredentials: true,
+      });
+      if (typeof onRemoveConnection === "function") {
+        onRemoveConnection(_id);
+      } else {
+        dispatch(removeConnection(_id));
+      }
+      alert(`${firstName} ${lastName} has been removed from your connections.`);
+    } catch (err) {
+      console.error("Remove connection error:", err);
+      alert(
+        err?.response?.data?.message ||
+          err?.response?.data ||
+          err?.message ||
+          "Unknown error occurred while removing connection."
+      );
+    }
+  };
+
   return (
     <div className="relative bg-white border border-gray-200 shadow-xl rounded-2xl w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-3xl p-6 flex flex-col items-center mx-auto my-4 transition-all hover:shadow-2xl">
       <div className="w-40 h-40 mt-1 mb-5">
@@ -48,6 +84,41 @@ const UserCard = ({
           alt={`${firstName} ${lastName}`}
           className="w-full h-full rounded-full object-cover border-4 border-primary ring-2 ring-offset-2 ring-primary"
         />
+        {showRemoveConnection && hideActions && (
+          <div className="absolute top-2 right-2 group">
+            <button
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-red-100 hover:bg-red-200 border-2 border-red-200 text-red-600 shadow transition-all focus:outline-none focus:ring-2 focus:ring-red-400"
+              onClick={handleRemoveConnection}
+              aria-label="Remove Connection"
+              tabIndex={0}
+            >
+              <svg
+                width="22"
+                height="22"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <circle cx="12" cy="12" r="12" fill="#fee2e2" />
+                <path
+                  d="M9 10v4m3-4v4m-5 6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H7z"
+                  stroke="#dc2626"
+                  strokeWidth="2"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M10 7V5a2 2 0 1 1 4 0v2"
+                  stroke="#dc2626"
+                  strokeWidth="2"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+            <span className="pointer-events-none opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 absolute z-20 right-0 mt-2 px-3 py-1 text-xs rounded bg-gray-800 text-white shadow transition-opacity duration-200 whitespace-nowrap">
+              Remove from connections
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="flex items-end justify-center gap-2 mb-3 flex-wrap">

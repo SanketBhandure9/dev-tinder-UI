@@ -5,10 +5,13 @@ const connectionSlice = createSlice({
   initialState: null,
   reducers: {
     addConnections: (state, action) => action.payload,
-    removeConnections: (state, action) => null,
+    removeConnection: (state, action) => {
+      if (!Array.isArray(state)) return state;
+      return state.filter((conn) => conn._id !== action.payload);
+    },
   },
 });
 
-export const { addConnections, removeConnections } = connectionSlice.actions;
+export const { addConnections, removeConnection } = connectionSlice.actions;
 
 export default connectionSlice.reducer;
