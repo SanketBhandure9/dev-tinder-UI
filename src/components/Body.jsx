@@ -35,7 +35,7 @@ const Body = () => {
       <div className="flex-shrink-0">
         <NavBar />
       </div>
-      <main className="flex-grow flex flex-col items-center px-2 md:px-0 min-h-0 w-full">
+      <main className="flex-grow flex flex-col justify-center items-center px-2 md:px-0 min-h-0 w-full">
         <Outlet />
       </main>
       <div className="flex-shrink-0">

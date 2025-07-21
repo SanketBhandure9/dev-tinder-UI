@@ -78,7 +78,7 @@ const UserCard = ({
 
   return (
     <div className="relative bg-white border border-gray-200 shadow-xl rounded-2xl w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-3xl p-6 flex flex-col items-center mx-auto my-4 transition-all hover:shadow-2xl">
-      <div className="w-42 h-42 mt-1 mb-5">
+      <div className="w-42 h-42 mt-0 mb-3 sm:mb-5">
         <img
           src={photoUrl}
           alt={`${firstName} ${lastName}`}
