@@ -12,3 +12,6 @@ http://localhost:3000/login
 
 1. Responsive
 2. NavBar
+
+Frontend Running URL: http://16.171.136.111/
+Backend Running URL: http://16.171.136.111:3000/
