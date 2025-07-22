@@ -85,19 +85,21 @@ const Requests = () => {
           items={requests}
           showPagination={false}
           renderCard={(request) => (
-            <div className="relative w-full max-w-md mx-auto flex flex-col items-center">
-              <UserCard
-                user={request.fromUserId}
-                isPreview={false}
-                hideActions={false}
-                onUserAction={(status) =>
-                  reviewRequests(
-                    status === "interested" ? "accepted" : "rejected",
-                    request._id
-                  )
-                }
-              />
-            </div>
+            request && request.fromUserId ? (
+              <div className="relative w-full max-w-md mx-auto flex flex-col items-center">
+                <UserCard
+                  user={request.fromUserId}
+                  isPreview={false}
+                  hideActions={false}
+                  onUserAction={(status) =>
+                    reviewRequests(
+                      status === "interested" ? "accepted" : "rejected",
+                      request._id
+                    )
+                  }
+                />
+              </div>
+            ) : null
           )}
         />
       </div>

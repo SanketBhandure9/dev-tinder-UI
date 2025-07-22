@@ -1,8 +1,11 @@
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { LOGOUT_URL } from "../utils/constants";
+import { LOGOUT_URL, USER_DELETE_ACCOUNT_URL } from "../utils/constants";
 import { removeUser } from "../utils/userSlice";
+import { resetFeed } from "../utils/feedSlice";
+import { resetConnections } from "../utils/connectionSlice";
+import { resetRequests } from "../utils/requestSlice";
 import { useState, useRef } from "react";
 
 const NavBar = () => {
@@ -122,6 +125,35 @@ const NavBar = () => {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    if (
+      !window.confirm(
+        "Are you sure you want to delete your account? This action cannot be undone."
+      )
+    ) {
+      return;
+    }
+    try {
+      await axios.delete(USER_DELETE_ACCOUNT_URL, { withCredentials: true });
+      alert("Your account has been deleted.");
+      dispatch(removeUser());
+      dispatch(resetFeed());
+      dispatch(resetConnections());
+      dispatch(resetRequests());
+      // Clear all persisted data
+      localStorage.clear();
+      sessionStorage.clear();
+      navigate("/login", { state: { resetLogin: true } });
+    } catch (err) {
+      alert(
+        err?.response?.data?.message ||
+          err?.response?.data ||
+          err?.message ||
+          "Failed to delete account."
+      );
+    }
+  };
+
   return (
     <nav className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-lg shadow-lg border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
@@ -204,22 +236,6 @@ const NavBar = () => {
                   tabIndex={0}
                   className="menu menu-sm dropdown-content bg-white rounded-xl z-10 mt-3 w-64 p-0 shadow-lg border border-gray-100"
                 >
-                  {/* User Info */}
-                  <li className="flex flex-col items-center gap-1 py-4 border-b border-gray-100">
-                    <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-primary shadow mb-2">
-                      <img
-                        alt="User Photo"
-                        src={user.photoUrl}
-                        className="object-cover w-full h-full rounded-full"
-                      />
-                    </div>
-                    <span className="font-semibold text-gray-900 text-base">
-                      {user.firstName} {user.lastName}
-                    </span>
-                    <span className="text-xs text-gray-500 truncate max-w-[12rem]">
-                      {user.email || user.username || ""}
-                    </span>
-                  </li>
                   {/* Profile */}
                   <li>
                     <Link
@@ -295,6 +311,28 @@ const NavBar = () => {
                         />
                       </svg>
                       Logout
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={handleDeleteAccount}
+                      className="flex items-center gap-3 px-4 py-2 font-semibold text-error border border-error hover:bg-error/10 hover:text-error rounded-lg transition w-full mt-1"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                      Delete Account
                     </button>
                   </li>
                 </ul>
@@ -381,6 +419,29 @@ const NavBar = () => {
                   />
                 </svg>
                 <span>Logout</span>
+              </button>
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  handleDeleteAccount();
+                }}
+                className="flex items-center gap-3 px-3 py-3 rounded-lg transition font-semibold text-lg text-error border border-error hover:bg-error/10 hover:text-error mt-1"
+              >
+                <svg
+                  width="22"
+                  height="22"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+                <span>Delete Account</span>
               </button>
               {user && (
                 <div className="flex items-center gap-3 mt-4">

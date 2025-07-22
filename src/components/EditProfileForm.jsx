@@ -96,11 +96,12 @@ const EditProfileForm = ({
                   <span className="text-xs text-gray-500 text-right">
                     {field.value.length}/{field.maxLength}
                   </span>
-                  {field.name === "about" && (field.value.length < 70 || field.value.length > 250) && (
-                    <span className="text-xs text-red-500 mt-1 block">
-                      About must be between 70 and 250 characters.
-                    </span>
-                  )}
+                  {field.name === "about" &&
+                    (field.value.length < 70 || field.value.length > 250) && (
+                      <span className="text-xs text-red-500 mt-1 block">
+                        About must be between 70 and 250 characters.
+                      </span>
+                    )}
                 </>
               ) : (
                 <>
@@ -165,8 +166,11 @@ const EditProfileForm = ({
       {/* Save Button */}
       <div className="flex justify-center mt-5">
         {(() => {
-          const aboutField = (fields || []).find(f => f.name === "about");
-          const aboutIsValid = aboutField && aboutField.value.length >= 70 && aboutField.value.length <= 250;
+          const aboutField = (fields || []).find((f) => f.name === "about");
+          const aboutIsValid =
+            aboutField &&
+            aboutField.value.length >= 70 &&
+            aboutField.value.length <= 250;
           const buttonDisabled = !canSave || !aboutIsValid;
           return (
             <button
@@ -182,15 +186,14 @@ const EditProfileForm = ({
                 !buttonDisabled
                   ? "Click to save profile"
                   : !canSave
-                    ? "Please add at least 5 skills to continue"
-                    : "About must be between 70 and 250 characters."
+                  ? "Please add at least 5 skills to continue"
+                  : "About must be between 70 and 250 characters."
               }
             >
               Save Profile
             </button>
           );
         })()}
-
       </div>
     </div>
   );

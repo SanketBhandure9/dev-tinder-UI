@@ -1,16 +1,26 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
 import { addUser } from "../utils/userSlice";
 import { useNavigate } from "react-router-dom";
 import { LOGIN_URL, USER_SIGNUP } from "../utils/constants";
 
 const Login = () => {
+  const location = useLocation();
   const [isLoginForm, setIsLoginForm] = useState(true);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [emailId, setEmailId] = useState("tara@harale.com");
-  const [password, setPassword] = useState("Tara@123");
+  const [emailId, setEmailId] = useState("");
+  const [password, setPassword] = useState("");
+
+  // Clear login fields if redirected from account deletion
+  useEffect(() => {
+    if (location.state && location.state.resetLogin) {
+      setEmailId("");
+      setPassword("");
+    }
+  }, [location.state]);
   const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -23,7 +33,8 @@ const Login = () => {
         { withCredentials: true }
       );
       dispatch(addUser(result.data.data));
-      navigate("/profile");
+      alert("Profile created successfully!");
+      navigate("/feed");
     } catch (err) {
       setError(err?.response?.data?.message || "Signup failed.");
       console.error(err);
@@ -31,6 +42,10 @@ const Login = () => {
   };
 
   const handleLogin = async () => {
+    if (!emailId || !password) {
+      setError("Please enter both email and password.");
+      return;
+    }
     try {
       const result = await axios.post(
         LOGIN_URL,
@@ -41,7 +56,7 @@ const Login = () => {
       navigate("/feed");
     } catch (err) {
       setError(err?.response?.data?.message || "Login failed.");
-      console.error(err);
+      if (err?.response?.status !== 400) console.error(err);
     }
   };
 

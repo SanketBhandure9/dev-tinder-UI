@@ -17,7 +17,6 @@ const Connections = () => {
         withCredentials: true,
       });
       // Log the response for debugging
-      console.log("Connections API response:", response.data);
       let connectionsArr = response.data?.data;
       if (!Array.isArray(connectionsArr) && Array.isArray(response.data)) {
         connectionsArr = response.data;
@@ -111,14 +110,16 @@ const Connections = () => {
       <div className="flex justify-center items-center w-full">
         <CardCarousel
           items={connections}
-          renderCard={(connection) => (
-            <UserCard
-              user={connection}
-              key={connection._id}
-              hideActions={true}
-              showRemoveConnection={true}
-            />
-          )}
+          renderCard={(connection) =>
+            connection && connection._id ? (
+              <UserCard
+                user={connection}
+                key={connection._id}
+                hideActions={true}
+                showRemoveConnection={true}
+              />
+            ) : null
+          }
         />
       </div>
     </div>

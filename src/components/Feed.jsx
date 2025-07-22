@@ -16,10 +16,6 @@ const Feed = () => {
         withCredentials: true,
       });
 
-      // Log and extract users array
-      console.log("response", response.data);
-      // If response.data is { data: [...] }, use response.data.data
-      // If response.data is [...], use response.data
       const users = Array.isArray(response.data)
         ? response.data
         : response.data?.data || [];
