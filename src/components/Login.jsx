@@ -34,7 +34,7 @@ const Login = () => {
       );
       dispatch(addUser(result.data.data));
       alert("Profile created successfully!");
-      navigate("/feed");
+      navigate("/profile");
     } catch (err) {
       setError(err?.response?.data?.message || "Signup failed.");
       console.error(err);

@@ -53,6 +53,7 @@ const EditProfile = ({ user }) => {
   );
   const [skillInput, setSkillInput] = useState("");
   const [skillError, setSkillError] = useState("");
+  const [gender, setGender] = useState(user.gender || "");
   const [fields, setFields] = useState(() =>
     DEFAULT_FIELDS.map((f) => ({
       ...f,
@@ -65,7 +66,16 @@ const EditProfile = ({ user }) => {
 
   const saveProfile = async () => {
     setError("");
-    setSkillError("");
+
+    // Validate minimum 5 skills
+    if (skills.length < 5) {
+      return setError("Please add at least 5 skills to continue");
+    }
+
+    // Validate gender selection
+    if (!gender) {
+      return setError("Please select your gender");
+    }
 
     for (let field of fields) {
       if (field.required && !field.validate(field.value)) {
@@ -78,6 +88,7 @@ const EditProfile = ({ user }) => {
       payload[f.name] = f.value;
     });
     payload.skills = skills;
+    payload.gender = gender;
 
     try {
       const response = await axios.post(PROFILE_EDIT_URL, payload, {
@@ -156,6 +167,8 @@ const EditProfile = ({ user }) => {
                 handleSkillInputKeyDown={handleSkillInputKeyDown}
                 error={error}
                 saveProfile={saveProfile}
+                gender={gender}
+                setGender={setGender}
               />
             </div>
           )}

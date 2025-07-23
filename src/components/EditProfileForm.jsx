@@ -11,6 +11,8 @@ const EditProfileForm = ({
   handleSkillInputKeyDown,
   error,
   saveProfile,
+  gender,
+  setGender,
 }) => {
   const photoField = Array.isArray(fields)
     ? fields.find((f) => f.name === "photoUrl")
@@ -50,6 +52,11 @@ const EditProfileForm = ({
             {skillError && (
               <span className="text-xs text-red-500 mt-1">{skillError}</span>
             )}
+            {skills.length < 5 && (
+              <span className="text-xs text-red-500 mt-1">
+                Please add at least 5 skills to continue
+              </span>
+            )}
             <div className="flex flex-wrap gap-2 mt-2">
               {(skills || []).map((skill, idx) => (
                 <span
@@ -67,6 +74,44 @@ const EditProfileForm = ({
                 </span>
               ))}
             </div>
+          </div>
+
+          {/* Gender Field */}
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text text-gray-800 text-sm font-semibold">
+                Gender
+              </span>
+            </label>
+            <div className="flex gap-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="gender"
+                  value="male"
+                  checked={gender === "male"}
+                  onChange={(e) => setGender(e.target.value)}
+                  className="radio radio-primary"
+                />
+                <span className="text-sm text-gray-700">Male</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="gender"
+                  value="female"
+                  checked={gender === "female"}
+                  onChange={(e) => setGender(e.target.value)}
+                  className="radio radio-primary"
+                />
+                <span className="text-sm text-gray-700">Female</span>
+              </label>
+            </div>
+            {!gender && (
+              <span className="text-xs text-red-500 mt-1">
+                Please select your gender
+              </span>
+            )}
           </div>
 
           {/* Other Fields */}
