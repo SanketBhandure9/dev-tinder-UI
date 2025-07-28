@@ -6,6 +6,7 @@ import {
 import { removeUserFromFeed } from "../utils/feedSlice";
 import { useDispatch } from "react-redux";
 import { removeConnection } from "../utils/connectionSlice";
+import { Link } from "react-router-dom";
 
 const UserCard = ({
   user,
@@ -221,6 +222,9 @@ const UserCard = ({
           </button>
         </div>
       )}
+      <Link to={"/chat/" + _id} className="mt-4">
+        <button className="text-black">Chat</button>
+      </Link>
     </div>
   );
 };
