@@ -9,6 +9,7 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const { targetUserId } = useParams();
+  const [targetUser, setTargetUser] = useState(null);
   const user = useSelector((store) => store.user);
   const userId = user?._id;
   const socketRef = useRef(null);
@@ -20,6 +21,8 @@ const Chat = () => {
       let response = await axios.get(`${USER_CHAT_HISTORY}/${targetUserId}`, {
         withCredentials: true,
       });
+
+      setTargetUser(response.data.data.targetUser);
 
       const chatHistory = response?.data?.data.messages.map((message) => {
         const { sender, text } = message;
@@ -101,9 +104,23 @@ const Chat = () => {
     <div className="flex justify-center w-full bg-gray-50 h-full">
       <div className="flex flex-col w-full max-w-2xl sm:w-[90%] lg:w-[70%] xl:w-[60%] bg-white shadow-sm">
         {/* Header */}
-        <div className="bg-white border-b border-gray-200 px-4 py-3">
+        <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-3">
+          {targetUser?.photoUrl ? (
+            <img
+              src={targetUser?.photoUrl}
+              alt={`${targetUser?.firstName} ${targetUser?.lastName}`}
+              className="w-10 h-10 rounded-full object-cover border border-gray-300"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center text-lg font-semibold">
+              {targetUser?.firstName?.[0]?.toUpperCase() || "U"}
+            </div>
+          )}
+
           <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
-            Chat with {messages[0]?.firstName || "User"}
+            {targetUser
+              ? `${targetUser.firstName} ${targetUser.lastName}`
+              : "User"}
           </h2>
         </div>
 
@@ -155,8 +172,19 @@ const Chat = () => {
                 onKeyDown={handleKeyPress}
               />
             </div>
-            <button type="submit" className="btn btn-primary px-5 rounded-xl">
-              Send
+            <button
+              type="submit"
+              className="bg-primary hover:bg-primary/90 transition p-3 rounded-full shadow-md focus:outline-none"
+              aria-label="Send"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 text-white"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M2.01 21L23 12 2.01 3v7l15 2-15 2z" />
+              </svg>
             </button>
           </form>
         </div>

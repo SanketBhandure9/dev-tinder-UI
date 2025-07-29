@@ -14,6 +14,7 @@ const UserCard = ({
   hideActions = false,
   onUserAction,
   showRemoveConnection = false,
+  showChatButton = false,
   onRemoveConnection,
 }) => {
   const dispatch = useDispatch();
@@ -121,7 +122,6 @@ const UserCard = ({
           </div>
         )}
       </div>
-
       <div className="flex items-end justify-center gap-2 mb-3 flex-wrap">
         <span className="text-2xl sm:text-3xl font-semibold text-gray-800 leading-tight">
           {firstName} {lastName}
@@ -151,13 +151,11 @@ const UserCard = ({
           </span>
         )}
       </div>
-
       {about && (
         <p className="text-lg text-gray-500 text-center italic mb-3 px-4">
           {about}
         </p>
       )}
-
       {user.skills && Array.isArray(user.skills) && user.skills.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-2 justify-center">
           {user.skills.map((skill, idx) => (
@@ -170,7 +168,6 @@ const UserCard = ({
           ))}
         </div>
       )}
-
       {!isPreview && !hideActions && (
         <div className="flex gap-6 mt-2">
           {/* Ignore (cross) button */}
@@ -222,9 +219,33 @@ const UserCard = ({
           </button>
         </div>
       )}
-      <Link to={"/chat/" + _id} className="mt-4">
-        <button className="text-black">Chat</button>
-      </Link>
+
+      {/* Chat button */}
+      {showChatButton && hideActions && (
+        <div className="absolute bottom-4 right-4">
+          <Link
+            to={`/chat/${_id}`}
+            className="flex items-center justify-center w-11 h-11 bg-blue-100 hover:bg-blue-200 rounded-full shadow border border-blue-300 transition"
+            aria-label={`Chat with ${firstName}`}
+            title={`Chat with ${firstName}`}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 text-blue-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M8 10h.01M12 10h.01M16 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-6 3h-6"
+              />
+            </svg>
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,6 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 
-const CardCarousel = ({ items = [], renderCard, title, showPagination = true }) => {
+const CardCarousel = ({
+  items = [],
+  renderCard,
+  title,
+  showPagination = true,
+}) => {
   const [index, setIndex] = useState(0);
   const total = items.length;
   const [isMobile, setIsMobile] = useState(false);
@@ -140,13 +145,6 @@ const CardCarousel = ({ items = [], renderCard, title, showPagination = true }) 
           </button>
         )}
       </div>
-
-      {/* Pagination info */}
-      {showPagination && (
-        <div className="mt-2 text-sm text-gray-500">
-          {index + 1} of {total}
-        </div>
-      )}
     </div>
   );
 };

@@ -117,6 +117,7 @@ const Connections = () => {
                 key={connection._id}
                 hideActions={true}
                 showRemoveConnection={true}
+                showChatButton={true}
               />
             ) : null
           }
