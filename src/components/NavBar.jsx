@@ -22,7 +22,7 @@ const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const navLinks = [
+  const NAV_BAR_LINKS = [
     {
       to: "/feed",
       label: "Feed",
@@ -113,15 +113,11 @@ const NavBar = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await axios.post(
-        LOGOUT_URL,
-        {},
-        { withCredentials: true }
-      );
+      await axios.post(LOGOUT_URL, {}, { withCredentials: true });
       dispatch(removeUser());
       navigate("/login");
     } catch (err) {
-      // redirect to error page
+      // fallback: navigate to error or do nothing
     }
   };
 
@@ -130,9 +126,9 @@ const NavBar = () => {
       !window.confirm(
         "Are you sure you want to delete your account? This action cannot be undone."
       )
-    ) {
+    )
       return;
-    }
+
     try {
       await axios.delete(USER_DELETE_ACCOUNT_URL, { withCredentials: true });
       alert("Your account has been deleted.");
@@ -140,7 +136,6 @@ const NavBar = () => {
       dispatch(resetFeed());
       dispatch(resetConnections());
       dispatch(resetRequests());
-      // Clear all persisted data
       localStorage.clear();
       sessionStorage.clear();
       navigate("/login", { state: { resetLogin: true } });
@@ -174,50 +169,50 @@ const NavBar = () => {
           </div>
 
           {/* Desktop Nav */}
-          <div className="hidden lg:flex lg:items-center lg:gap-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={`flex items-center gap-2 px-2 py-2 lg:px-3 rounded-lg transition font-semibold text-base ${
-                  location.pathname.startsWith(link.to)
-                    ? "bg-primary/10 text-primary"
-                    : "text-gray-600 hover:bg-gray-100 hover:text-primary"
-                }`}
+          {user && (
+            <div className="hidden lg:flex lg:items-center lg:gap-4">
+              {NAV_BAR_LINKS.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className={`flex items-center gap-2 px-2 py-2 lg:px-3 rounded-lg transition font-semibold text-base ${
+                    location.pathname.startsWith(link.to)
+                      ? "bg-primary/10 text-primary"
+                      : "text-gray-600 hover:bg-gray-100 hover:text-primary"
+                  }`}
+                >
+                  {link.icon}
+                  <span className="hidden sm:inline">{link.label}</span>
+                </Link>
+              ))}
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-2 py-2 lg:px-3 rounded-lg transition font-semibold text-base text-error hover:bg-error/10 hover:text-error"
               >
-                {link.icon}
-                <span className="hidden sm:inline">{link.label}</span>
-              </Link>
-            ))}
-            {/* Logout */}
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 px-2 py-2 lg:px-3 rounded-lg transition font-semibold text-base text-error hover:bg-error/10 hover:text-error"
-            >
-              <svg
-                width="22"
-                height="22"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 16l4-4m0 0l-4-4m4 4H7"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 12h4"
-                />
-              </svg>
-              <span className="hidden sm:inline">Logout</span>
-            </button>
-            {/* Avatar Dropdown */}
-            {user && (
+                <svg
+                  width="22"
+                  height="22"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 16l4-4m0 0l-4-4m4 4H7"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 12h4"
+                  />
+                </svg>
+                <span className="hidden sm:inline">Logout</span>
+              </button>
+
+              {/* Avatar */}
               <div className="dropdown dropdown-end ml-2 lg:ml-4">
                 <div
                   tabIndex={0}
@@ -226,9 +221,9 @@ const NavBar = () => {
                 >
                   <div className="w-10 h-10 lg:w-11 lg:h-11 rounded-full overflow-hidden border-2 border-primary shadow">
                     <img
-                      alt="User Photo"
+                      alt="User"
                       src={user.photoUrl}
-                      className="object-cover w-full h-full rounded-full"
+                      className="object-cover w-full h-full"
                     />
                   </div>
                 </div>
@@ -236,7 +231,6 @@ const NavBar = () => {
                   tabIndex={0}
                   className="menu menu-sm dropdown-content bg-white rounded-xl z-10 mt-3 w-64 p-0 shadow-lg border border-gray-100"
                 >
-                  {/* Profile */}
                   <li>
                     <Link
                       to="/profile"
@@ -259,32 +253,7 @@ const NavBar = () => {
                       Profile
                     </Link>
                   </li>
-                  {/* Settings (placeholder) */}
-                  <li>
-                    <button
-                      className="flex items-center gap-3 px-4 py-2 font-medium text-gray-700 hover:bg-primary/10 hover:text-primary rounded-lg transition cursor-not-allowed opacity-60"
-                      disabled
-                    >
-                      <svg
-                        width="18"
-                        height="18"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"
-                        />
-                      </svg>
-                      Settings
-                    </button>
-                  </li>
-                  {/* Divider */}
                   <li className="my-1 border-t border-gray-100"></li>
-                  {/* Logout */}
                   <li>
                     <button
                       onClick={handleLogout}
@@ -337,10 +306,10 @@ const NavBar = () => {
                   </li>
                 </ul>
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
-          {/* Mobile menu button */}
+          {/* Mobile hamburger icon */}
           <div className="lg:hidden flex items-center ml-2">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -365,8 +334,9 @@ const NavBar = () => {
           </div>
         </div>
       </div>
-      {/* Mobile Nav */}
-      {mobileMenuOpen && (
+
+      {/* Mobile menu overlay */}
+      {mobileMenuOpen && user && (
         <div
           className="fixed inset-0 z-40 bg-black/40 lg:hidden"
           onClick={handleOverlayClick}
@@ -376,7 +346,7 @@ const NavBar = () => {
             className="absolute top-0 left-0 w-full bg-white/95 backdrop-blur-lg border-b border-gray-100 shadow-lg animate-fade-in-down"
           >
             <div className="flex flex-col gap-1 px-4 pt-4 pb-6">
-              {navLinks.map((link) => (
+              {NAV_BAR_LINKS.map((link) => (
                 <Link
                   key={link.to}
                   to={link.to}
@@ -418,7 +388,7 @@ const NavBar = () => {
                     d="M3 12h4"
                   />
                 </svg>
-                <span>Logout</span>
+                Logout
               </button>
               <button
                 onClick={() => {
@@ -441,22 +411,20 @@ const NavBar = () => {
                     d="M6 18L18 6M6 6l12 12"
                   />
                 </svg>
-                <span>Delete Account</span>
+                Delete Account
               </button>
-              {user && (
-                <div className="flex items-center gap-3 mt-4">
-                  <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary shadow">
-                    <img
-                      alt="User Photo"
-                      src={user.photoUrl}
-                      className="object-cover w-full h-full rounded-full"
-                    />
-                  </div>
-                  <span className="font-medium text-gray-700 text-base truncate">
-                    {user.firstName}
-                  </span>
+              <div className="flex items-center gap-3 mt-4">
+                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary shadow">
+                  <img
+                    alt="User"
+                    src={user.photoUrl}
+                    className="object-cover w-full h-full"
+                  />
                 </div>
-              )}
+                <span className="font-medium text-gray-700 text-base truncate">
+                  {user.firstName}
+                </span>
+              </div>
             </div>
           </div>
         </div>
