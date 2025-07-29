@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { createSocketConnection } from "../utils/socket";
 import { useSelector } from "react-redux";
@@ -11,23 +11,30 @@ const Chat = () => {
   const { targetUserId } = useParams();
   const user = useSelector((store) => store.user);
   const userId = user?._id;
+  const socketRef = useRef(null);
+  const messagesEndRef = useRef(null);
 
   const fetchChatHistory = async () => {
-    let chatHistory = await axios.get(USER_CHAT_HISTORY + `/${targetUserId}`, {
-      withCredentials: true,
-    });
+    if (!targetUserId) return;
+    try {
+      let response = await axios.get(`${USER_CHAT_HISTORY}/${targetUserId}`, {
+        withCredentials: true,
+      });
 
-    chatHistory = chatHistory?.data?.messages.map((message) => {
-      const { senderId, text } = message;
-      return {
-        firstName: senderId.firstName,
-        lastName: senderId.lastName,
-        text,
-        userId: senderId._id,
-      };
-    });
+      const chatHistory = response?.data?.data.messages.map((message) => {
+        const { sender, text } = message;
+        return {
+          firstName: sender.firstName,
+          lastName: sender.lastName,
+          text,
+          userId: sender._id,
+        };
+      });
 
-    setMessages(chatHistory);
+      setMessages(chatHistory);
+    } catch (error) {
+      console.error("Error fetching chat history:", error);
+    }
   };
 
   useEffect(() => {
@@ -35,78 +42,126 @@ const Chat = () => {
   }, [targetUserId]);
 
   useEffect(() => {
-    if (!userId || !targetUserId) {
-      console.error("User ID or Target User ID is missing");
-      return;
-    }
-    const socket = createSocketConnection();
-    socket.emit("joinChat", { userId, targetUserId });
+    if (!userId || !targetUserId) return;
 
-    socket.on("messageReceived", ({ firstName, lastName, text }) => {
-      console.log("New message received:", text);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { firstName, lastName, text, userId: targetUserId },
-      ]);
-    });
+    socketRef.current = createSocketConnection();
+    socketRef.current.emit("joinChat", { userId, targetUserId });
+
+    socketRef.current.on(
+      "messageReceived",
+      ({ firstName, lastName, text, senderId }) => {
+        setMessages((prev) => [
+          ...prev,
+          { firstName, lastName, text, userId: senderId },
+        ]);
+      }
+    );
 
     return () => {
-      socket.disconnect();
+      socketRef.current.disconnect();
     };
   }, [userId, targetUserId]);
 
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   const sendMessage = () => {
-    if (!newMessage.trim()) {
-      alert("Message cannot be empty");
-      return;
-    }
+    if (!newMessage.trim()) return;
 
-    const socket = createSocketConnection();
-
-    socket.emit("sendMessage", {
+    socketRef.current?.emit("sendMessage", {
       firstName: user.firstName,
       lastName: user.lastName,
-      userId,
+      senderId: userId,
       targetUserId,
       text: newMessage,
     });
+
     setNewMessage("");
   };
 
-  return (
-    <>
-      <div className="join">
-        <div>
-          <label className="input validator join-item">
-            <input
-              type="text"
-              placeholder="Enter message"
-              value={newMessage}
-              onChange={(event) => setNewMessage(event.target.value)}
-              required
-            />
-          </label>
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") sendMessage();
+  };
+
+  if (!userId || !targetUserId) {
+    return (
+      <div className="flex flex-col min-h-screen bg-base-100 items-center justify-center">
+        <div className="text-center">
+          <div className="loading loading-spinner loading-lg text-primary mb-4"></div>
+          <p className="text-base-content/70">
+            {!userId ? "Loading user data..." : "Loading chat..."}
+          </p>
         </div>
-        <button className="btn btn-neutral join-item" onClick={sendMessage}>
-          Send
-        </button>
       </div>
-      <div>
-        {messages.map((message, index) => (
-          <div key={index} className="chat chat-start">
-            <div className="chat-image avatar">
-              <div className="w-10 rounded-full">
-                <img
-                  alt="Tailwind CSS chat bubble component"
-                  src="https://img.daisyui.com/images/profile/demo/kenobee@192.webp"
-                />
+    );
+  }
+
+  return (
+    <div className="flex justify-center w-full bg-gray-50 h-full">
+      <div className="flex flex-col w-full max-w-2xl sm:w-[90%] lg:w-[70%] xl:w-[60%] bg-white shadow-sm">
+        {/* Header */}
+        <div className="bg-white border-b border-gray-200 px-4 py-3">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
+            Chat with {messages[0]?.firstName || "User"}
+          </h2>
+        </div>
+
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto px-3 py-4 sm:px-6 sm:py-6 space-y-4">
+          {messages.map((message, index) => {
+            const isOwn = message.userId === userId;
+            return (
+              <div
+                key={index}
+                className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
+              >
+                <div
+                  className={`px-4 py-2 rounded-2xl shadow-sm text-base break-words ${
+                    isOwn
+                      ? "bg-green-100 text-gray-800"
+                      : "bg-gray-100 text-gray-800"
+                  } max-w-[80%] sm:max-w-md`}
+                >
+                  {message.text}
+                </div>
               </div>
+            );
+          })}
+          {messages.length === 0 && (
+            <p className="text-center text-gray-400 mt-6">
+              No messages yet. Start the conversation!
+            </p>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Input (Sticky Bottom) */}
+        <div className="sticky bottom-0 bg-white border-t border-gray-200 px-3 py-4 sm:px-6 z-10">
+          <form
+            className="flex w-full gap-3 items-center"
+            onSubmit={(e) => {
+              e.preventDefault();
+              sendMessage();
+            }}
+          >
+            <div className="flex-1 min-w-0">
+              <input
+                type="text"
+                placeholder="Type your message..."
+                className="w-full rounded-xl border border-gray-300 bg-white text-gray-800 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyDown={handleKeyPress}
+              />
             </div>
-            <div className="chat-bubble">{message.text}</div>
-          </div>
-        ))}
+            <button type="submit" className="btn btn-primary px-5 rounded-xl">
+              Send
+            </button>
+          </form>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 
