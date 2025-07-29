@@ -89,11 +89,11 @@ const Chat = () => {
 
   if (!userId || !targetUserId) {
     return (
-      <div className="flex flex-col min-h-screen bg-base-100 items-center justify-center">
-        <div className="text-center">
-          <div className="loading loading-spinner loading-lg text-primary mb-4"></div>
-          <p className="text-base-content/70">
-            {!userId ? "Loading user data..." : "Loading chat..."}
+      <div className="flex flex-col min-h-screen items-center justify-center bg-white px-4">
+        <div className="flex flex-col items-center gap-4 p-6 rounded-xl shadow-lg border border-gray-200 bg-gradient-to-br from-white via-orange-50 to-pink-50 animate-fade-in">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-sm sm:text-base text-gray-600 font-medium">
+            {!userId ? "Authenticating user..." : "Loading chat interface..."}
           </p>
         </div>
       </div>
