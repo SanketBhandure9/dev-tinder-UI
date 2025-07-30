@@ -17,3 +17,5 @@ export const USER_SEND_REQUESTS_URL = BASE_URL + "/request/send";
 export const USER_REMOVE_CONNECTION = BASE_URL + "/user/connection/remove";
 export const USER_DELETE_ACCOUNT_URL = BASE_URL + "/delete-account";
 export const USER_CHAT_HISTORY = BASE_URL + "/chat";
+
+const AWS_SYSTEM_CONNECTION_COMMAND = `ssh -i "dev-tinder-secret.pem" ubuntu@ec2-16-171-136-111.eu-north-1.compute.amazonaws.com`;
